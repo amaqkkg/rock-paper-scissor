@@ -1,3 +1,5 @@
+let playerScore = 0;
+
 function getComputerChoice() {
   const rand = Math.random();
   if (rand < 0.33) {
@@ -15,27 +17,43 @@ function playRound(playerSelection, computerSelection) {
     (playerSelection === "paper" && computerSelection === "scissor") ||
     (playerSelection === "scissor" && computerSelection === "rock")
   ) {
-    return `You Lose! ${computerSelection} beats ${playerSelection} `;
-  } else return `You Win! ${playerSelection} beats ${computerSelection}`;
-}
-
-// const playerSelection = "rock";
-// const computerSelection = getComputerChoice();
-// console.log(playRound(playerSelection, computerSelection));
-
-// console.log(playerChoice);
-function game() {
-  let playerChoice = prompt("Select rock, paper or scissor: ").toLowerCase();
-  console.log(playerChoice);
-  if (playerChoice != "rock" && playerChoice != "paper" && playerChoice != "scissor") {
-    return "You should choose rock, paper, or scissor";
+    // playerScore > 0 ? playerScore-- : null;
+    return `You Lose! ${computerSelection} beats ${playerSelection}`;
+  } else {
+    playerScore++;
+    return `You Win! ${playerSelection} beats ${computerSelection}`;
   }
-  const computerChoice = getComputerChoice();
-  console.log(computerChoice);
-
-  return playRound(playerChoice, computerChoice);
 }
 
-for (let i = 0; i < 5; i++) {
-  console.log(game());
-}
+const content = document.querySelector(".content");
+const btns = document.querySelectorAll(".btn-game");
+const gameStatus = document.querySelector(".game-status");
+const score = document.querySelector(".score");
+const announcement = document.querySelector(".announcement");
+const endGame = document.querySelector(".end-game");
+const resetBtn = document.querySelector(".btn-reset");
+
+score.textContent = `Current score is: ${playerScore}`;
+
+const checkScore = () => {
+  if (playerScore == 5) {
+    announcement.classList.toggle("hide");
+    content.classList.toggle("hide");
+  }
+};
+
+btns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    const result = playRound(e.srcElement.id, getComputerChoice());
+    gameStatus.textContent = result;
+    score.textContent = `Current score is: ${playerScore}`;
+    checkScore();
+  });
+});
+
+resetBtn.addEventListener("click", () => {
+  content.classList.toggle("hide");
+  announcement.classList.toggle("hide");
+  playerScore = 0;
+  score.textContent = `Current score is: ${playerScore}`;
+});
